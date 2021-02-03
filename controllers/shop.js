@@ -1,6 +1,5 @@
 const Product = require('../models/product')
 
-
 exports.getIndex = (req, res, next) => {
   Product.fetchAll((products) => {
     res.render('shop/index', {
@@ -21,6 +20,17 @@ exports.getProducts = (req, res, next) => {
   })
 }
 
+exports.getProduct = (req, res, next) => {
+  const prodId = req.params.productId
+  Product.findById(prodId, (product) => {
+    res.render('shop/product-detail', {
+      product,
+      pageTitle: product.title,
+      path: '/products',
+    })
+  })
+}
+
 exports.getCart = (req, res, next) => {
   res.render('shop/cart', {
     pageTitle: 'Your Cart',
@@ -28,16 +38,16 @@ exports.getCart = (req, res, next) => {
   })
 }
 
+exports.getOrders = (req, res, next) => {
+  res.render('shop/orders', {
+    pageTitle: 'Your Orders',
+    path: '/orders',
+  })
+}
+
 exports.getCheckout = (req, res, next) => {
   res.render('shop/checkout', {
     pageTitle: 'Checkout',
     path: '/checkout',
-  })
-}
-
-exports.getAdminProducts = (req, res, next) => {
-  res.render('admin/products', {
-    pageTitle: 'Products',
-    path: '/admin/products',
   })
 }
