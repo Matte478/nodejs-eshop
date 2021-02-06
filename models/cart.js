@@ -26,10 +26,10 @@ module.exports = class Cart {
       // add new product / increase quantity
       if (existingProduct) {
         updatedProduct = { ...existingProduct }
-        updatedProduct.gty += 1
+        updatedProduct.qty += 1
         cart.products[existingProductIndex] = updatedProduct
       } else {
-        updatedProduct = { id, gty: 1 }
+        updatedProduct = { id, qty: 1 }
         cart.products = [...cart.products, updatedProduct]
       }
 
@@ -37,6 +37,42 @@ module.exports = class Cart {
       fs.writeFile(p, JSON.stringify(cart), (err) => {
         if (err) console.log(err)
       })
+    })
+  }
+
+  static deleteProduct(id, productPrice) {
+    fs.readFile(p, (err, fileContent) => {
+      if (err) {
+        return
+      }
+      const updatedCart = { ...JSON.parse(fileContent) }
+      const product = updatedCart.products.find(
+        (prod) => parseFloat(prod.id) === parseFloat(id),
+      )
+      if (!product) {
+        return
+      }
+      const productQty = product.qty
+      updatedCart.products = updatedCart.products.filter(
+        (prod) => parseFloat(prod.id) !== parseFloat(id),
+      )
+      updatedCart.totalPrice =
+        updatedCart.totalPrice - productPrice * productQty
+
+      fs.writeFile(p, JSON.stringify(updatedCart), (err) => {
+        if (err) console.log(err)
+      })
+    })
+  }
+
+  static getCart(callback) {
+    fs.readFile(p, (err, fileContent) => {
+      const cart = JSON.parse(fileContent)
+      if (err) {
+        callback(null)
+      } else {
+        callback(cart)
+      }
     })
   }
 }
