@@ -56,8 +56,7 @@ module.exports = class Cart {
       updatedCart.products = updatedCart.products.filter(
         (prod) => parseFloat(prod.id) !== parseFloat(id),
       )
-      updatedCart.totalPrice =
-        updatedCart.totalPrice - productPrice * productQty
+      updatedCart.totalPrice -= productPrice * productQty
 
       fs.writeFile(p, JSON.stringify(updatedCart), (err) => {
         if (err) console.log(err)
